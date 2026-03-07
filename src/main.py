@@ -41,8 +41,8 @@ for n in range(2, Nt): #for all time steps except the first two
     for x in range(1, Nx - 1): # for all interior points
         for y in range(1, Ny - 1):
             # Update the pressure field using the finite difference scheme
-            P[n+1, x, y] = 2 * P[n, x, y] - P[n-1, x, y] + C**2 * (
-                P[n, x, y+1] + P[n, x, y-1] + P[n, x+1, y] + P[n, x-1, y] - 4 * P[n, x, y]
+            P[n, x, y] = 2 * P[n-1, x, y] - P[n-2, x, y] + C**2 * (
+                P[n-1, x, y+1] + P[n-1, x, y-1] + P[n-1, x+1, y] + P[n-1, x-1, y] - 4 * P[n-1, x, y]
             )
     
     # NUEMANN BOUNDARY CONDITION (rigid walls, zero normal gradient)

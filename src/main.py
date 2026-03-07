@@ -10,7 +10,7 @@ dy = dx
 c = 343.0                 # speed of sound
 
 dt = 0.0002 # temporal increment
-tend = 0.1  # temporal span
+tend = 0.05  # temporal span
 Nt = int(tend / dt)
 C= c * dt / dx  # Courant number
 
@@ -60,43 +60,40 @@ for n in range(2, Nt): #for all time steps except the first two
     P[n, :, 0] = P[n, :, 1]       # Left wall
     P[n, :, -1] = P[n, :, -2]     # Right wall
 
-# ==========================================
-# POST-PROCESSING AND PLOTTING
-# ==========================================
+# ================POST-PROCESSING AND PLOTTING==========================
+
 # Extract the pressure field at a specific time step for plotting
 plot_time = 0.0  # time at which to plot
 plot_step = int(plot_time / dt)  # corresponding time step index
 
-# 提取虚拟麦克风数据 (位于房间中央)
+# extract history of P at center of room (virtual microphone)
 mic_x_idx, mic_y_idx = Nx // 2, Ny // 2
-# 因为我们使用了 3D array，可以直接通过切片获取整个时间历史！
 mic_history = P[:, mic_y_idx, mic_x_idx]
 time_array = np.linspace(0, tend, Nt)
 
-plt.style.use('bmh')
 fig = plt.figure(figsize=(16, 12))
 
-# 1. 3D 曲面图 (3D Surface Plot)
+# 1. 3D Surface Plot at plot_time
 ax1 = fig.add_subplot(2, 2, 1, projection='3d')
 surf = ax1.plot_surface(X, Y, P[plot_step, :, :], cmap='viridis', edgecolor='none')
 ax1.set_title(f'3D Acoustic Pressure at t={plot_time}s')
 ax1.set_xlabel('x (m)'); ax1.set_ylabel('y (m)'); ax1.set_zlabel('Pressure (Pa)')
 ax1.set_zlim(-A, A) 
 
-# 2. 2D 等高线干涉图 (2D Contour Plot)
+# 2. 2D Contour Plot at plot_time, showing interference and reflections
 ax2 = fig.add_subplot(2, 2, 2)
 contour = ax2.contourf(X, Y, P[plot_step, :, :], levels=60, cmap='RdBu', vmin=-A/3, vmax=A/3)
 fig.colorbar(contour, ax=ax2, label='Pressure (Pa)')
 ax2.set_title('Wave Interference & Wall Reflection')
 ax2.set_xlabel('x (m)'); ax2.set_ylabel('y (m)')
 
-# 3. 麦克风时域波形图 (1D Line Plot)
+# 1D Line Plot of P at microphone location over time
 ax3 = fig.add_subplot(2, 2, 3)
 ax3.plot(time_array, mic_history, color='navy')
 ax3.set_title('Microphone Pressure History')
 ax3.set_xlabel('Time (s)'); ax3.set_ylabel('Pressure (Pa)')
 
-# 4. FFT 频谱分析 (Task K)
+# 4. FFT Analysis of microphone signal to identify resonant frequencies
 N_fft = len(mic_history)
 yf = fft(mic_history)
 xf = fftfreq(N_fft, dt)[:N_fft//2]
@@ -107,5 +104,5 @@ ax4.set_title('Fourier Analysis (Room Resonant Frequencies)')
 ax4.set_xlabel('Frequency (Hz)'); ax4.set_ylabel('Amplitude')
 ax4.set_xlim(0, 1500) 
 
-plt.tight_layout()
+plt.tight_layout(pad=3.0, h_pad=6.0, w_pad=2.0)
 plt.show()

@@ -1,6 +1,6 @@
 import pytest
 
-from template_python.examples import fizzbuzz
+from src.examples import fizzbuzz
 
 
 @pytest.mark.parametrize(

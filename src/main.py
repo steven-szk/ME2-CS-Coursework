@@ -10,7 +10,7 @@ dy = dx
 c = 343.0                 # speed of sound
 
 dt = 0.0002 # temporal increment
-tend = 0.05  # temporal span
+tend = 0.1  # temporal span
 Nt = int(tend / dt)
 C= c * dt / dx  # Courant number
 
@@ -63,7 +63,7 @@ for n in range(2, Nt): #for all time steps except the first two
 # ================POST-PROCESSING AND PLOTTING==========================
 
 # Extract the pressure field at a specific time step for plotting
-plot_time = 0.0  # time at which to plot
+plot_time = 0.05  # time at which to plot
 plot_step = int(plot_time / dt)  # corresponding time step index
 
 # extract history of P at center of room (virtual microphone)
